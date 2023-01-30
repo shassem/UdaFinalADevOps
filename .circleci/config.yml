@@ -165,30 +165,31 @@ jobs:
             - project/.circleci/ansible/inventory.txt
       - destroy-environment      
 
-#   configure-infrastructure:
-#     docker:
-#       # Docker image here that supports Ansible
-#     steps:
-#       # Checkout code from git
-#       # Add ssh keys with fingerprint
-#       # attach workspace
-#       - run:
-#           name: Install dependencies
-#           command: |
-#             # Your code here
-#             exit 1
-#       - run:
-#           name: Configure server
-#           command: |
-#             # Your code here
-#             exit 1
-#       # Here's where you will add some code to rollback on failure      
+  configure-infrastructure:
+    docker:
+      - image: python:3.7-alpine3.11
+    steps:
+      - checkout
+      - add_ssh_keys:
+            fingerprints: ["e5:f1:d3:8a:07:4a:14:62:9a:7d:a8:89:b5:ee:6c:04"]       
+      - attach_workspace:
+          at: ~/       
+      - run:
+          name: Install dependencies
+          command: |
+            apk add --update ansible
+      - run:
+          name: Configure server
+          command: |
+            cd .circleci/ansible
+            ansible-playbook -i ~/inventory configure-server.yml
+      - destroy-environment      
 
 #   run-migrations:
 #     docker:
 #       # Docker image here that supports NodeJS
 #     steps:
-#       # Checkout code from git
+      # - checkout
 #       - run:
 #           name: Run migrations
 #           command: |
@@ -205,8 +206,8 @@ jobs:
 #     docker:
 #       # Docker image here that supports AWS CLI
 #     steps:
-#       # Checkout code from git
-#       - run:
+      # - checkout
+      # - run:
 #           name: Install dependencies
 #           command: |
 #             # your code here
@@ -226,7 +227,7 @@ jobs:
 #     docker:
 #       # Docker image here that supports Ansible
 #     steps:
-#       # Checkout code from git
+      # - checkout
 #       # Add ssh keys with fingerprint
 #       # attach workspace
 #       - run:
@@ -243,7 +244,7 @@ jobs:
 #     docker:
 #       # Lightweight Docker image 
 #     steps:
-#       # Checkout code from git
+      # - checkout
 #       - run:
 #           name: Install dependencies
 #           command: |
@@ -266,7 +267,7 @@ jobs:
 #     docker:
 #       # Docker image here that supports AWS CLI
 #     steps:
-#       # Checkout code from git
+      # - checkout
 #       - run:
 #           name: Install dependencies
 #           command: |
@@ -281,7 +282,7 @@ jobs:
 #     docker:
 #       # Docker image here
 #     steps:
-#       # Checkout code from git
+      # - checkout
 #       - run:
 #           name: Get old stack workflow id
 #           command: |
