@@ -15,7 +15,7 @@ commands:
               tar gzip
             curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
             unzip awscliv2.zip
-            ./aws/install -i /usr/local/aws -b /usr/local/bin/aws
+            sudo ./aws/install -i /usr/local/aws -b /usr/local/bin/aws
             aws cloudformation delete-stack --stack-name udapeople-frontend-${CIRCLE_WORKFLOW_ID:0:7}
             aws cloudformation delete-stack --stack-name udapeople-backend-${CIRCLE_WORKFLOW_ID:0:7}
   # depend-for-destroy:
