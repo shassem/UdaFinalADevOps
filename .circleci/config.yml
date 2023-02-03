@@ -9,28 +9,23 @@ commands:
           name: Destroy environments
           when: on_fail
           command: |
-            apk update && apk add \
-              ca-certificates \
-              curl \
-              tar gzip
-            curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-            unzip awscliv2.zip
-            sudo ./aws/install -i /usr/local/aws -b /usr/local/bin/aws
             aws cloudformation delete-stack --stack-name udapeople-frontend-${CIRCLE_WORKFLOW_ID:0:7}
             aws cloudformation delete-stack --stack-name udapeople-backend-${CIRCLE_WORKFLOW_ID:0:7}
-  # depend-for-destroy:
-  #   description: Dependencies for destroying the environments
-  #   steps:
-  #     - run:
-  #         name: Dependencies 
-  #         when: on_fail
-  #         command: |
-  #           apk update && apk add \
-  #             ca-certificates \
-  #             curl
-  #           curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-  #           unzip awscliv2.zip
-  #           ./aws/install
+  depend-for-destroy:
+    description: Dependencies for destroying the environments
+    steps:
+      - run:
+          name: Dependencies 
+          when: on_fail
+          command: |
+            apk update && apk add \
+            ca-certificates \
+            curl \
+            tar gzip
+            curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+            unzip awscliv2.zip
+            ./aws/install -i /usr/local/aws -b /usr/local/bin/aws
+            chmod +x /usr/bin/aws
 
   revert-migrations:
     description: Revert the last migration if successfully run in the current workflow.
@@ -203,7 +198,7 @@ jobs:
           command: |
             cd .circleci/ansible
             ansible-playbook -i ~/inventory configure-server.yml
-      # - depend-for-destroy
+      - depend-for-destroy
       - destroy-environment      
 
 #   run-migrations:
