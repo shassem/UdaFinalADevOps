@@ -18,6 +18,7 @@ commands:
           name: Dependencies 
           when: on_fail
           command: |
+            apk update && apk add
             apt-get update
             apt-get install \
               apt-transport-https \
