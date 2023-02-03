@@ -27,9 +27,10 @@ commands:
       - run:
           name: Ansible 
           command: |
-           apt -y install software-properties-common
-           apt-add-repository -y ppa:ansible/ansible
-           apt install ansible -y
+          apt-get update
+          apt -y install software-properties-common
+          apt-add-repository -y ppa:ansible/ansible
+          apt install ansible -y
             
 
   revert-migrations:
