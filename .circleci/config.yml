@@ -167,20 +167,21 @@ jobs:
 
   configure-infrastructure:
     docker:
-      - image: cytopia/ansible
+      - image: python:3.7-alpine3.11
     steps:
       - checkout
       - add_ssh_keys:
             fingerprints: ["e5:f1:d3:8a:07:4a:14:62:9a:7d:a8:89:b5:ee:6c:04"]       
       - attach_workspace:
           at: ~/       
-      # - run:
-          # name: Installing dependencies (tar - gzip - aws cli - ansible)
-          # command: |
-          #   curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-          #   unzip awscliv2.zip
-          #   sudo ./aws/install
-          #   apk add --update ansible 
+      - run:
+          name: Installing dependencies (aws cli - ansible)
+          command: |
+            apt install curl
+            curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+            unzip awscliv2.zip
+            sudo ./aws/install
+            apk add --update ansible 
       - run:
           name: Configure server
           command: |
