@@ -15,25 +15,23 @@ commands:
     description: Dependencies for destroying the environments
     steps:
       - run:
-          name: Dependencies 
+          name: AWS-CLI 
           when: on_fail
           command: |
-            apk --no-cache add \
-              binutils \
-              curl \
-            && curl -sL https://alpine-pkgs.sgerrand.com/sgerrand.rsa.pub -o /etc/apk/keys/sgerrand.rsa.pub \
-            && curl -sLO https://github.com/sgerrand/alpine-pkg-glibc/releases/download/2.35-r0/glibc-2.35-r0.apk \
-            && curl -sLO https://github.com/sgerrand/alpine-pkg-glibc/releases/download/2.35-r0/glibc-bin-2.35-r0.apk \
-            && curl -sLO https://github.com/sgerrand/alpine-pkg-glibc/releases/download/2.35-r0/glibc-i18n-2.35-r0.apk \
-            && apk add --no-cache \
-                glibc-2.35-r0.apk \
-                glibc-bin-2.35-r0.apk \
-                glibc-i18n-2.35-r0.apk \
-            && /usr/glibc-compat/bin/localedef -i en_US -f UTF-8 en_US.UTF-8 \
-            && ln -sf /usr/glibc-compat/lib/ld-linux-x86-64.so.2 /lib64/ld-linux-x86-64.so.2 \
-            && curl -sL https://awscli.amazonaws.com/awscli-exe-linux-x86_64-2.6.1_VERSION}.zip -o awscliv2.zip \
-            && unzip awscliv2.zip
-            ./aws/install
+           curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+           unzip awscliv2.zip
+           sudo ./aws/install 
+  install-ansible:
+    description: Installing Ansible
+    steps:
+      - run:
+          name: Ansible 
+          when: on_fail
+          command: |
+           sudo apt -y install software-properties-common
+           sudo apt-add-repository -y ppa:ansible/ansible
+           sudo apt install ansible -y
+            
 
   revert-migrations:
     description: Revert the last migration if successfully run in the current workflow.
@@ -190,17 +188,18 @@ jobs:
 
   configure-infrastructure:
     docker:
-      - image: python:3.7-alpine3.11
+      - image: ubuntu:18.04
     steps:
       - checkout
+      - install-ansible
       - add_ssh_keys:
             fingerprints: ["e5:f1:d3:8a:07:4a:14:62:9a:7d:a8:89:b5:ee:6c:04"]       
       - attach_workspace:
           at: ~/       
-      - run:
-          name: Installing dependencies (aws cli - ansible)
-          command: |
-            apk add --update ansible 
+      # - run:
+      #     name: Installing dependencies (ansible)
+      #     command: |
+      #       apk add --update ansible 
       - run:
           name: Configure server
           command: |
