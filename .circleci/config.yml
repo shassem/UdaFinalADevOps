@@ -26,7 +26,6 @@ commands:
     steps:
       - run:
           name: Ansible 
-          when: on_fail
           command: |
            sudo apt -y install software-properties-common
            sudo apt-add-repository -y ppa:ansible/ansible
