@@ -1,7 +1,7 @@
 ---
-- name: Install Python
-  raw: apt -y update && apt install -y python-minimal
-  when: check_python.rc != 0
+# - name: Install Python
+#   raw: apt -y update && apt install -y python-minimal
+#   when: check_python.rc != 0
   
 - name: "update apt packages."
   become: true
