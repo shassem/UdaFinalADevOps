@@ -211,12 +211,13 @@ jobs:
       - image: circleci/node:13.8.0
     steps:
       - checkout
-      - restore_cache:
-          keys: [backend-build]
+      # - restore_cache:
+      #     keys: [backend-build]
       - run:
           name: Run migrations
           command: |
             cd backend
+            npm cache clean --force
             npm install
             npm audit fix --force
             npm run migrations > migrations-dump.txt
@@ -370,7 +371,7 @@ workflows:
               only: [master]
       - configure-infrastructure: 
           requires: [deploy-infrastructure]
-      - run-migrations:
+      - run-migrations
           requires: [configure-infrastructure]
       - deploy-frontend:
           requires: [run-migrations]
