@@ -1,0 +1,25 @@
+---
+# npm and pm2 should be already installed "configure-server" role
+
+- name: Create a directory
+  ansible.builtin.file:
+    paths: ~/backend
+    state: directory
+    mode: '0755'
+
+- name: Copying
+  copy:
+    src: artifact.tar.gz
+    dest: ~/backend
+    mode: '0644'
+
+- name: unzipping
+  unarchive:
+    src: ~/backend/artifact.tar.gz
+    dest: ~/backend
+
+- name: pm2 stop
+  command: pm2 stop default
+
+- name: pm2 start
+  command: pm2 start npm -- start
