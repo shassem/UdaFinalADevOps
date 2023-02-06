@@ -24,7 +24,7 @@ commands:
            unzip
            curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
            unzip awscliv2.zip
-           ./aws/install 
+           sudo ./aws/install 
   install-ansible:
     description: Installing Ansible
     steps:
@@ -211,13 +211,14 @@ jobs:
       - image: circleci/node:13.8.0
     steps:
       - checkout
-      - restore_cache:
-          keys: [backend-build]
+      # - restore_cache:
+      #     keys: [backend-build]
       - run:
           name: Run migrations
           command: |
             cd backend
             npm install
+            npm audit fix
             npm run migrations > migrations-dump.txt
       - run:
           name: Send migration results to memstash
