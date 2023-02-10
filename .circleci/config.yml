@@ -234,6 +234,8 @@ jobs:
       - image: circleci/node:13.8.0
     steps:
       - checkout
+      - restore_cache:
+          keys: [frontend-build]
       - run:
           name: Installing AWS and TAR
           command: |
@@ -271,11 +273,13 @@ jobs:
       - image: circleci/node:13.8.0
     steps:
       - checkout
+      - restore_cache:
+          keys: [backend-build] 
       - install-ansible
       - add_ssh_keys:
             fingerprints: ["e5:f1:d3:8a:07:4a:14:62:9a:7d:a8:89:b5:ee:6c:04"]       
       - attach_workspace:
-          at: ~/        
+          at: ~/       
       - run:
           name: Install dependencies
           command: |
