@@ -2,7 +2,7 @@
 # npm and pm2 should be already installed "configure-server" role
 
 - name: "Create a directory"
-  ansible.builtin.file:
+  file:
     path: ~/backend
     state: directory
     mode: '0755'
