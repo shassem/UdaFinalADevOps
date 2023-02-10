@@ -178,10 +178,11 @@ jobs:
       - run:
           name: Add back-end ip to ansible inventory
           command: |
-            echo [all] > ~/inventory
+            cd .circleci/ansible
+            echo [all] > inventory.txt
             aws ec2 describe-instances \
               --query 'Reservations[*].Instances[*].PublicIpAddress' \
-              --output text >> ~/inventory
+              --output text >> inventory.txt
       - persist_to_workspace:
           root: ~/
           paths:
@@ -202,7 +203,7 @@ jobs:
           name: Configure server
           command: |
             cd .circleci/ansible
-            ansible-playbook -i ~/inventory configure-server.yml
+            ansible-playbook -i inventory.txt configure-server.yml
       - depend-to-destroy
       - destroy-environment      
 
@@ -294,8 +295,8 @@ jobs:
             tar -C backend -czvf artifact.tar.gz .
             cd .circleci/ansible
             echo "Contents  of the inventory.txt file is -------"
-            cat ~/inventory
-            ansible-playbook -i ~/inventory deploy-backend.yml
+            cat inventory.txt
+            ansible-playbook -i inventory.txt deploy-backend.yml
       - depend-to-destroy
       - destroy-environment 
       - revert-migrations
