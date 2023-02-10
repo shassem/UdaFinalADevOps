@@ -203,8 +203,8 @@ jobs:
           command: |
             cd .circleci/ansible
             ansible-playbook -i inventory.txt configure-server.yml
-      # - depend-to-destroy
-      # - destroy-environment      
+      - depend-to-destroy
+      - destroy-environment      
 
   run-migrations:
     docker:
