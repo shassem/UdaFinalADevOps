@@ -19,12 +19,12 @@ commands:
           name: AWS-CLI 
           when: on_fail
           command: |
-           sudo apt install -y curl \
+           apt install -y curl \
            tar gzip \
            unzip
            curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
            unzip awscliv2.zip
-           sudo ./aws/install 
+           ./aws/install 
   install-ansible:
     description: Installing Ansible
     steps:
@@ -254,7 +254,7 @@ jobs:
           name: Deploy frontend objects
           command: |
             cd frontend
-            apt-get install npm
+            yum install npm
             npm install
             npm run build
             tar -czvf artifact-"${CIRCLE_WORKFLOW_ID:0:7}".tar.gz dist
@@ -276,7 +276,7 @@ jobs:
           name: Install dependencies
           command: |
             apt install -y tar gzip
-            apt-get install npm
+            apt-get install npm -y
       - run:
           name: Deploy backend
           command: |
