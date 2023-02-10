@@ -231,13 +231,10 @@ jobs:
       - revert-migrations
   deploy-frontend:
     docker:
-      - image: amazon/aws-cli
+      - image: circleci/node:13.8.0
     steps:
       - checkout
-      - run:
-          name: Install dependencies
-          command: |
-            yum install -y tar gzip
+      - depend-for-destroy          # to install aws cli / tar
       - attach_workspace:
           at: ~/
       - run:
@@ -254,7 +251,6 @@ jobs:
           name: Deploy frontend objects
           command: |
             cd frontend
-            yum install npm
             npm install
             npm run build
             tar -czvf artifact-"${CIRCLE_WORKFLOW_ID:0:7}".tar.gz dist
@@ -264,7 +260,7 @@ jobs:
                     
   deploy-backend:
     docker:
-      - image: ubuntu:18.04
+      - image: circleci/node:13.8.0
     steps:
       - checkout
       - install-ansible
@@ -276,7 +272,6 @@ jobs:
           name: Install dependencies
           command: |
             apt install -y tar gzip
-            apt-get install npm -y
       - run:
           name: Deploy backend
           command: |
