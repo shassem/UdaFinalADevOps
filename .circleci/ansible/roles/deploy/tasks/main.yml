@@ -3,7 +3,7 @@
 
 - name: "Create a directory"
   ansible.builtin.file:
-    paths: ~/backend
+    path: ~/backend
     state: directory
     mode: '0755'
 

@@ -9,6 +9,7 @@ commands:
           name: Destroy environments
           when: on_fail
           command: |
+            aws s3 rm s3://udapeople-${CIRCLE_WORKFLOW_ID:0:7} --recursive
             aws cloudformation delete-stack --stack-name udapeople-frontend-${CIRCLE_WORKFLOW_ID:0:7}
             aws cloudformation delete-stack --stack-name udapeople-backend-${CIRCLE_WORKFLOW_ID:0:7}
   
@@ -25,6 +26,7 @@ commands:
            curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
            unzip awscliv2.zip
            sudo ./aws/install 
+
   install-ansible:
     description: Installing Ansible
     steps:
@@ -36,11 +38,27 @@ commands:
             sudo apt-add-repository -y ppa:ansible/ansible
             sudo apt install ansible -y
               
+  to-revert-yum:
+    description: npm
+    steps:
+      - run:
+          name: NPM
+          when: on_fail
+          command: |
+            curl -sL https://rpm.nodesource.com/setup_10.x | sudo bash -
+            sudo yum install nodejs
+
+  to-revert-apt:
+    description: npm
+    steps:
+      - run:
+          name: NPM
+          when: on_fail
+          command: |
+            curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.3/install.sh | bash
 
   revert-migrations:
-    description: Revert the last migration if successfully run in the current workflow.
-    parameters:
-      # Add parameter here     
+    description: Revert the last migration if successfully run in the current workflow. 
     steps:
       - run:
           name: Revert migrations
@@ -339,21 +357,28 @@ jobs:
             fi
       - depend-to-destroy
       - destroy-environment 
+      - to-revert-apt
       - revert-migrations
-#   cloudfront-update:
-#     docker:
-#       # Docker image here that supports AWS CLI
-#     steps:
-      # - checkout
-#       - run:
-#           name: Install dependencies
-#           command: |
-#             # your code here
-#       - run:
-#           name: Update cloudfront distribution
-#           command: |
-#             # your code here
-#       # Here's where you will add some code to rollback on failure  
+  cloudfront-update:
+    docker:
+      - image: amazon/aws-cli
+    steps:
+      - checkout
+      - run:
+          name: Install dependencies
+          command: |
+            yum install -y tar gzip
+      - run:
+          name: Update cloudfront distribution
+          command: |
+            aws cloudformation deploy \
+            --template-file .circleci/files/cloudfront.yml \
+            --stack-name InitialStack \
+            --parameter-overrides WorkflowID="udapeople-${CIRCLE_WORKFLOW_ID:0:7}" \
+            --tags project=udapeople
+      - destroy-environment
+      - to-revert-yum
+      - revert-migrations
 
 # cleanup:
 #     docker:
