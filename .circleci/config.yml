@@ -323,18 +323,26 @@ jobs:
       - image: cimg/base:stable     
     steps:
       - checkout
-      # - run:
-      #     name: Install dependencies
-      #     command: |
-      #       sudo apt-get install curl
       - run:
-          name: Backend smoke test.
+          name: Install dependencies
+          command: |
+            sudo apt install -y curl \
+            tar gzip \
+            unzip
+            curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+            unzip awscliv2.zip
+            sudo ./aws/install
+      - run:
+          name: Get backend url
           command: |
             export BACKEND_IP=$(aws ec2 describe-instances \
               --query 'Reservations[*].Instances[*].PublicIpAddress' \
               --output text)
             export API_URL="http://${BACKEND_IP}:3030"
             echo "${API_URL}"
+      - run:
+          name: Backend smoke test.
+          command: |
             if curl "${API_URL}/api/status" | grep "ok"
             then
                 exit 0
@@ -352,7 +360,6 @@ jobs:
             else
               exit 1
             fi
-      - depend-to-destroy
       - destroy-environment 
       - to-revert-apt
       - revert-migrations
