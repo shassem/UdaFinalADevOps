@@ -3,27 +3,42 @@
 #   raw: apt -y update && apt install -y python-minimal
 #   when: check_python.rc != 0
   
-- name: "update apt packages."
-  apt:
-    update_cache: yes
+# - name: "update apt packages."
+#   apt:
+#     update_cache: yes
 
-- name: "upgrade packages"
-  apt:
-    upgrade: yes
+# - name: "upgrade packages"
+#   apt:
+#     upgrade: yes
 
-- name: "remove dependencies that are no longer required"
-  apt:
-    autoremove: yes
+# - name: "remove dependencies that are no longer required"
+#   apt:
+#     autoremove: yes
 
-- name: "install dependencies"
-  apt:
-    name: ["nodejs", "npm"]
-    state: latest
-    update_cache: yes
+# - name: "install dependencies"
+#   apt:
+#     name: ["nodejs", "npm"]
+#     state: latest
+#     update_cache: yes
 
-- name: "install pm2"
+# - name: "install pm2"
+#   npm:
+#     name: pm2
+#     global: yes
+#     production: yes
+#     state: present
+
+- name: "Add Node.js from Nodesource"
+  become: true
+  shell: |
+    #Install Node.js LTS version as our base Node.js version
+    curl -fsSL https://deb.nodesource.com/setup_lts.x | sudo -E bash -
+    sudo apt install -y nodejs
+    
+    #Use n version manager to use Node.js v13.8.0
+    sudo npm install --global n
+    sudo n 13.8.0
+- name: "Install PM2 Globally"
   npm:
     name: pm2
     global: yes
-    production: yes
-    state: present
