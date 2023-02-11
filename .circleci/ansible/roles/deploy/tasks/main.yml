@@ -19,7 +19,7 @@
     dest: ~/backendapp
 
 - name: "pm2 stop"
-  command: pm2 stop default
+  shell: pm2 stop default
 
 - name: "pm2 start"
-  command: pm2 start npm -- start
+  shell: pm2 start npm -- start
