@@ -3,20 +3,20 @@
 
 - name: "Create a directory"
   file:
-    path: ~/backend
+    path: ~/backendapp
     state: directory
     mode: '0755'
 
 # - name: "Copying"
 #   copy:
 #     src: artifact.tar.gz
-#     dest: ~/backend
+#     dest: ~/backendapp
 #     mode: '0644'
 
 - name: "unzipping"
   unarchive:
     src: artifact.tar.gz
-    dest: ~/backend
+    dest: ~/backendapp
 
 - name: "pm2 stop"
   command: pm2 stop default
