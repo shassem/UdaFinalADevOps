@@ -383,7 +383,7 @@ jobs:
       - to-revert-yum
       - revert-migrations
 
-cleanup:
+  cleanup:
     docker:
       - image: amazon/aws-cli
     steps:
