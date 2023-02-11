@@ -314,9 +314,9 @@ jobs:
             echo "Contents  of the inventory.txt file is -------"
             cat inventory.txt
             ansible-playbook -i inventory.txt deploy-backend.yml
-      - depend-to-destroy
-      - destroy-environment 
-      - revert-migrations
+      # - depend-to-destroy
+      # - destroy-environment 
+      # - revert-migrations
   smoke-test:
     docker:
       - image: cimg/base:stable     
