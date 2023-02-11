@@ -236,7 +236,6 @@ jobs:
           command: |
             cd backend
             npm install
-            npm run build
             npm run migrations > migrations-dump.txt
       - run:
           name: Send migration results to kvdb
@@ -310,7 +309,7 @@ jobs:
             npm i
             npm run build
             tar -czvf artifact.tar.gz dist/* package*
-            cp artifact.tar.gz .circleci/ansible/roles/deploy/files/artifact.tar.gz
+            cp artifact.tar.gz ../.circleci/ansible/roles/deploy/files/artifact.tar.gz
             cd ../.circleci/ansible
             echo "Contents  of the inventory.txt file is -------"
             cat inventory.txt
@@ -357,9 +356,9 @@ jobs:
             else
               exit 1
             fi
-      # - destroy-environment 
-      # - to-revert-apt
-      # - revert-migrations
+      - destroy-environment 
+      - to-revert-apt
+      - revert-migrations
   cloudfront-update:
     docker:
       - image: amazon/aws-cli
