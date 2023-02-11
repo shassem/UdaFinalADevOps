@@ -317,9 +317,9 @@ jobs:
             echo "Contents  of the inventory.txt file is -------"
             cat inventory.txt
             ansible-playbook -i inventory.txt deploy-backend.yml
-      # - depend-to-destroy
-      # - destroy-environment 
-      # - revert-migrations
+      - depend-to-destroy
+      - destroy-environment 
+      - revert-migrations
   smoke-test:
     docker:
       - image: cimg/base:stable     
@@ -359,9 +359,9 @@ jobs:
             else
               exit 1
             fi
-      # - destroy-environment 
-      # - to-revert-apt
-      # - revert-migrations
+      - destroy-environment 
+      - to-revert-apt
+      - revert-migrations
   cloudfront-update:
     docker:
       - image: amazon/aws-cli
@@ -445,7 +445,7 @@ workflows:
           requires: [run-migrations]
       - smoke-test:
           requires: [deploy-backend, deploy-frontend]
-      # - cloudfront-update:
-      #     requires: [smoke-test]
-      # - cleanup:
-      #     requires: [cloudfront-update]
+      - cloudfront-update:
+          requires: [smoke-test]
+      - cleanup:
+          requires: [cloudfront-update]
