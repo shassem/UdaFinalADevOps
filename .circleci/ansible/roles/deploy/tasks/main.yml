@@ -18,8 +18,9 @@
     src: artifact.tar.gz
     dest: ~/backendapp
 
-- name: "pm2 stop"
-  shell: pm2 stop default
+- name: "pm2"
+  shell: |
+    cd ~/backendapp/dist
+    pm2 stop default
+    pm2 start npm -- start
 
-- name: "pm2 start"
-  shell: pm2 start npm -- start
