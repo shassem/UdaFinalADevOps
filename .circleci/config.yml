@@ -356,9 +356,9 @@ jobs:
             else
               exit 1
             fi
-      - destroy-environment 
-      - to-revert-apt
-      - revert-migrations
+      # - destroy-environment 
+      # - to-revert-apt
+      # - revert-migrations
   cloudfront-update:
     docker:
       - image: amazon/aws-cli
