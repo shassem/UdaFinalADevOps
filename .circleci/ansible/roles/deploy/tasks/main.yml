@@ -7,15 +7,9 @@
     state: directory
     mode: '0755'
 
-- name: "Copying"
-  copy:
-    src: artifact.tar.gz
-    dest: ~/backend
-    mode: '0644'
-
 - name: "unzipping"
   unarchive:
-    src: ~/backend/artifact.tar.gz
+    src: artifact.tar.gz
     dest: ~/backend
 
 - name: "pm2 stop"
