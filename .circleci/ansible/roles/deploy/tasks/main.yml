@@ -15,7 +15,7 @@
 
 - name: "unzipping"
   unarchive:
-    src: ~/artifact.tar.gz
+    src: artifact.tar.gz
     dest: ~/backend
 
 - name: "pm2 stop"
