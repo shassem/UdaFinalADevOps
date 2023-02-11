@@ -39,20 +39,20 @@ commands:
             sudo apt install ansible -y
               
   to-revert-yum:
-    description: npm
+    description: Installing NPM to revert migrations
     steps:
       - run:
-          name: NPM
+          name: Getting ready to revert
           when: on_fail
           command: |
             curl -sL https://rpm.nodesource.com/setup_10.x | sudo bash -
             sudo yum install nodejs
 
   to-revert-apt:
-    description: npm
+    description: Installing NPM to revert migrations
     steps:
       - run:
-          name: NPM
+          name: Getting ready to revert
           when: on_fail
           command: |
             curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.3/install.sh | bash
@@ -357,9 +357,9 @@ jobs:
             else
               exit 1
             fi
-      - destroy-environment 
-      - to-revert-apt
-      - revert-migrations
+      # - destroy-environment 
+      # - to-revert-apt
+      # - revert-migrations
   cloudfront-update:
     docker:
       - image: amazon/aws-cli
