@@ -259,10 +259,9 @@ jobs:
       - revert-migrations
   deploy-frontend:
     docker:
-      - image: cimg/base:stable
+      - image: circleci/node:13.8.0
     steps:
       - checkout
-      - install-nodejs
       - restore_cache:
           keys: [frontend-build]
       - run:
