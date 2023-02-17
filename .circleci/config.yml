@@ -401,7 +401,6 @@ jobs:
       - to-revert-yum
       - revert-migrations
 
-
   cleanup:
     docker:
       - image: amazon/aws-cli
