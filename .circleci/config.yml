@@ -37,7 +37,15 @@ commands:
             sudo apt -y install software-properties-common
             sudo apt-add-repository -y ppa:ansible/ansible
             sudo apt install ansible -y
-              
+  install-nodejs:
+    description: Installing NodeJS
+    steps:
+      - run:
+          name: NodeJS 
+          command: |
+            curl -fsSL https://deb.nodesource.com/setup_lts.x | sudo -E bash -
+            sudo apt install -y nodejs
+
   to-revert-yum:
     description: Installing NPM to revert migrations
     steps:
@@ -237,7 +245,6 @@ jobs:
           command: |
             cd backend
             npm install
-            npm run build
             npm run migrations > migrations-dump.txt
             cat migrations-dump.txt
       - run:
@@ -252,9 +259,10 @@ jobs:
       - revert-migrations
   deploy-frontend:
     docker:
-      - image: circleci/node:13.8.0
+      - image: cimg/base:stable
     steps:
       - checkout
+      - install-nodejs
       - restore_cache:
           keys: [frontend-build]
       - run:
@@ -282,25 +290,24 @@ jobs:
           name: Deploy frontend objects
           command: |
             cd frontend
-            npm install
             npm run build
-            tar -czvf artifact-"${CIRCLE_WORKFLOW_ID:0:7}".tar.gz dist
             aws s3 cp dist s3://udapeople-${CIRCLE_WORKFLOW_ID:0:7} --recursive
       - destroy-environment
       - revert-migrations   
                     
   deploy-backend:
     docker:
-      - image: circleci/node:13.8.0
+      - image: cimg/base:stable
     steps:
       - checkout
-      - restore_cache:
-          keys: [backend-build] 
+      - install-nodejs
       - install-ansible
       - add_ssh_keys:
             fingerprints: ["e5:f1:d3:8a:07:4a:14:62:9a:7d:a8:89:b5:ee:6c:04"]       
       - attach_workspace:
-          at: ~/       
+          at: ~/      
+      - restore_cache:
+          keys: [backend-build]  
       - run:
           name: Install dependencies
           command: |
